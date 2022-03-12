@@ -16,6 +16,39 @@ exports.listMovies = async(req, res) => {
         res.status(200).send({allMovie: movies});
     } catch (error) {
         console.log(error);
-        res.status(500).send({error: error.message});
+        res.status(500).send({err: error.message});
+    }
+}
+
+exports.updateMovie = async(req,res) => {
+    try {
+        const updatedMovie = await Movie.updateOne(
+            { [req.body.filterKey]:req.body.filterVal },
+            { [req.body.updateKey]:req.body.updateVal }
+        )
+        
+        if (updatedMovie.modifiedCount > 0) {
+            res.status(200).send({ msg: "updated!" });
+        } else {
+            throw new Error("did not update!");
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({err: error.message})
+    }
+}
+
+exports.deleteMovie = async(req,res) => {
+    try {
+        const deletedMovie = await Movie.deleteOne({
+            [req.params.filterKey]: req.params.filterVal
+        });
+        if (deletedMovie.deletedCount>0) {
+            res.status(200).send({msg: "deleted"})
+        } else {
+            throw new Error("no delete")
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
